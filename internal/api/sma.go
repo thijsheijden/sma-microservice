@@ -2,9 +2,9 @@ package api
 
 import (
 	"errors"
-	"log"
 	"net/http"
 	"net/url"
+	"sma-microservice/internal/sma"
 )
 
 // smaHandler returns an HTTP handler for the 'simple moving average'
@@ -18,13 +18,21 @@ func (a *API) smaHandler() http.Handler {
 			return
 		}
 
-		log.Println(exchange)
-		log.Println(interval)
-		log.Println(market)
+		// Create the SMA Request
+		smaRequest, err := sma.CreateSMARequest(exchange, market, interval)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
 
-		// Get SMA(8)
+		// Get the indicator
+		indicator, err := sma.GetIndicator(smaRequest)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
 
-		// Get SMA(50)
+		w.Write([]byte(indicator.String()))
 	})
 }
 
