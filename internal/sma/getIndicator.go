@@ -11,6 +11,13 @@ import (
 
 // GetIndicator gets the SMA with the params specified in the request
 func GetIndicator(request *Request) (indicator Indicator, err error) {
+	// Get the live signal price
+	signal, err := getLiveSignal(request)
+	if err != nil {
+		// This error could be ignored, and instead the last close price could be used
+		return
+	}
+
 	// Get start and end times in unix format
 	endTime := time.Now().Unix()
 
@@ -48,6 +55,10 @@ func GetIndicator(request *Request) (indicator Indicator, err error) {
 		err = errors.New("not enough candles to calculate SMA indicator")
 		return
 	}
+
+	// Replace the last candle with a new candle containing the signal price as close value
+	candles = candles[:len(candles)-1]
+	candles = append(candles, candle{Close: signal})
 
 	// Get the SMA(8)
 	var sum float64
