@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"strconv"
 )
@@ -26,13 +25,8 @@ func getLiveSignal(request *Request) (signal float64, err error) {
 		return
 	}
 
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		return
-	}
-
 	var signals liveSignals
-	err = json.Unmarshal(body, &signals)
+	err = json.NewDecoder(response.Body).Decode(&signals)
 	if err != nil {
 		return
 	}

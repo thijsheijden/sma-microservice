@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"time"
 )
@@ -43,14 +42,8 @@ func GetIndicator(request *Request) (indicator Indicator, err error) {
 		return
 	}
 
-	// Read the body
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		return
-	}
-
 	var candles candleHistory
-	err = json.Unmarshal(body, &candles)
+	err = json.NewDecoder(response.Body).Decode(&candles)
 	if err != nil {
 		return
 	}
