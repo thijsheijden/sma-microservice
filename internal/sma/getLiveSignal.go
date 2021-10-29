@@ -21,6 +21,11 @@ func getLiveSignal(request *Request) (signal float64, err error) {
 		return
 	}
 
+	if response.StatusCode != 200 {
+		err = errors.New("error while getting signal price")
+		return
+	}
+
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		return

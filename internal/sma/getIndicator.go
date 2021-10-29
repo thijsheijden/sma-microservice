@@ -38,6 +38,11 @@ func GetIndicator(request *Request) (indicator Indicator, err error) {
 		return
 	}
 
+	if response.StatusCode != 200 {
+		err = errors.New("error while getting candles to calculate SMA")
+		return
+	}
+
 	// Read the body
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
