@@ -29,7 +29,8 @@ func GetIndicator(request *Request) (indicator Indicator, err error) {
 		request.market,
 		startTime,
 		endTime,
-		request.intervalString)
+		request.intervalString,
+	)
 
 	// Make the request
 	response, err := http.Get(requestURL)
